@@ -1,13 +1,17 @@
 const test = require("ava")
-const theModule = require(".")
+const pEvent = require("p-event")
+const electronMessages = require(".")
 
-test("main", t => {
-	t.throws(() => {
-		theModule(123)
-	}, {
-		instanceOf: TypeError,
-		message: "Expected a string, got number"
+test("main", async t => {
+	const electronInstance = await electronMessages(async ipc => {
+		ipc.emit("unicorn", {
+			hello: "world"
+		})
 	})
 
-	t.is(theModule("unicorns"), "unicorns & rainbows")
+	t.deepEqual(await pEvent(electronInstance, "unicorn"), {
+		hello: "world"
+	})
+
+	electronInstance.close()
 })
