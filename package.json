@@ -1,6 +1,6 @@
 {
 	"name": "electron-messages",
-	"version": "0.0.0",
+	"version": "1.0.0",
 	"description": "Evaluate some code in an Electron context with inter-process messaging.",
 	"repository": "https://github.com/Richienb/electron-messages.git",
 	"author": "Richie Bendall <richiebendall@gmail.com>",
