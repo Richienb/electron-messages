@@ -2,7 +2,6 @@
 const electronEvaluate = require("electron-evaluate")
 const uniqueString = require("unique-string")
 const ipc = require("node-ipc")
-const fromEntries = require("fromentries")
 const v8 = require("v8")
 
 const startIpcServer = ipc => new Promise(resolve => {
@@ -10,7 +9,7 @@ const startIpcServer = ipc => new Promise(resolve => {
 	ipc.server.start()
 })
 
-const resolveModules = modules => fromEntries(modules.map(module_ => [module_, require.resolve(module_)]))
+const resolveModules = modules => new Map(modules.map(module_ => [module_, require.resolve(module_)]))
 
 module.exports = async (function_, arguments_ = [], options = {}) => {
 	ipc.config.id = uniqueString()
@@ -19,8 +18,8 @@ module.exports = async (function_, arguments_ = [], options = {}) => {
 	await startIpcServer(ipc)
 
 	const { cancel } = electronEvaluate(async (requirePaths, socketId, function_, arguments_) => {
-		const ipc = require(requirePaths["node-ipc"])
-		const uniqueString = require(requirePaths["unique-string"])
+		const ipc = require(requirePaths.get("node-ipc"))
+		const uniqueString = require(requirePaths.get("unique-string"))
 		const v8 = require("v8")
 
 		ipc.config.id = uniqueString()
