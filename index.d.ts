@@ -1,5 +1,5 @@
 import NodeIPC from "node-ipc"
-import Nightmare from "nightmare" // eslint-disable-line @typescript-eslint/no-unused-vars, import/no-extraneous-dependencies, node/no-extraneous-import
+import Nightmare from "nightmare" // eslint-disable-line import/no-extraneous-dependencies, node/no-extraneous-import
 
 type ValueOf<ObjectType> = ObjectType[keyof ObjectType]
 

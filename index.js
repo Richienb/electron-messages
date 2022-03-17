@@ -2,15 +2,12 @@
 const electronEvaluate = require("electron-evaluate")
 const uniqueString = require("unique-string")
 const ipc = require("node-ipc")
-const fromEntries = require("fromentries")
 const v8 = require("v8")
 
 const startIpcServer = ipc => new Promise(resolve => {
 	ipc.serve(resolve)
 	ipc.server.start()
 })
-
-const resolveModules = modules => fromEntries(modules.map(module_ => [module_, require.resolve(module_)]))
 
 module.exports = async (function_, arguments_ = [], options = {}) => {
 	ipc.config.id = uniqueString()
@@ -32,7 +29,10 @@ module.exports = async (function_, arguments_ = [], options = {}) => {
 		})
 
 		await eval(function_)(ipc.of[socketId], ...v8.deserialize(Buffer.from(arguments_, "hex"))) // eslint-disable-line no-eval
-	}, [resolveModules(["node-ipc", "unique-string"]), ipc.config.id, function_.toString(), v8.serialize(arguments_).toString("hex")], options)
+	}, [{
+		"node-ipc": require.resolve("node-ipc"),
+		"unique-string": require.resolve("unique-string")
+	}, ipc.config.id, function_.toString(), v8.serialize(arguments_).toString("hex")], options)
 
 	return {
 		...ipc.server,
